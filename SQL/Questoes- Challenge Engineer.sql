@@ -74,6 +74,17 @@ SELECT item_id, preco, estado, DATE('now')
 FROM Item
 WHERE estado IS NOT NULL;
 
+DELETE FROM Status WHERE data_status = DATE('now'); -- Apaga registros do status atual, se necessário
+
+-- Inserir os dados mais recentes na tabela Status, se houver mudança no estado
+INSERT INTO Status (item_id, preco, estado, data_status)
+SELECT i.item_id, i.preco, i.estado, DATE('now')
+FROM Item i
+LEFT JOIN Status s ON i.item_id = s.item_id
+WHERE (s.estado IS NULL OR i.estado != s.estado) AND i.estado IS NOT NULL;
+
+
+
 -- Exericicios extras 
 
 --4 Listar os 5 produtos mais caros por categoria
